@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransactionServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rewards API</a> &gt; <a href="index.source.html" class="el_package">com.rewards.service.impl</a> &gt; <span class="el_source">TransactionServiceImpl.java</span></div><h1>TransactionServiceImpl.java</h1><pre class="source lang-java linenums">package com.rewards.service.impl;
+
+import com.rewards.dto.TransactionRequestDTO;
+import com.rewards.model.Customer;
+import com.rewards.model.Transaction;
+import com.rewards.repository.CustomerRepository;
+import com.rewards.repository.TransactionRepository;
+import com.rewards.service.TransactionService;
+import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
+
+@Service
+public class TransactionServiceImpl implements TransactionService {
+
+    private final TransactionRepository txRepo;
+    private final CustomerRepository customerRepo;
+
+<span class="fc" id="L19">    public TransactionServiceImpl(TransactionRepository txRepo, CustomerRepository customerRepo) {</span>
+<span class="fc" id="L20">        this.txRepo = txRepo;</span>
+<span class="fc" id="L21">        this.customerRepo = customerRepo;</span>
+<span class="fc" id="L22">    }</span>
+
+    @Override
+    public Transaction createTransaction(TransactionRequestDTO req) {
+<span class="fc" id="L26">        Customer customer = null;</span>
+
+        // 1. Try by ID
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        if ( req.getCustomerId( ) != null ) {</span>
+<span class="fc" id="L30">            customer = customerRepo.findById( req.getCustomerId( ) ).orElse( null );</span>
+        }
+
+        // 2. Try by Email
+<span class="fc bfc" id="L34" title="All 4 branches covered.">        if ( customer == null &amp;&amp; req.getCustomerEmail( ) != null ) {</span>
+<span class="fc" id="L35">            customer = customerRepo.findByCustomerEmail( req.getCustomerEmail( ) ).orElse( null );</span>
+        }
+        // 3. Throw if not found
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if ( customer == null ) {</span>
+<span class="fc" id="L39">            throw new NoSuchElementException( &quot;Customer not found. Please register first.&quot; );</span>
+        }
+
+        // 4. Save transaction
+<span class="fc" id="L43">        Transaction tx = new Transaction( req.getAmount( ), req.getTransactionDate( ), customer );</span>
+<span class="fc" id="L44">        return txRepo.save( tx );</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

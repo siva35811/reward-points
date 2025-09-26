@@ -1,0 +1,8 @@
+com\rewards\repository\TransactionRepositoryTest.class
+com\rewards\controller\RewardControllerIntegrationTest.class
+com\rewards\service\RewardServiceImplTest.class
+com\rewards\controller\CustomerControllerIntegrationTest.class
+com\rewards\service\CustomerServiceImplTest.class
+com\rewards\repository\CustomerRepositoryTest.class
+com\rewards\controller\TransactionControllerTest.class
+com\rewards\service\TransactionServiceImplTest.class

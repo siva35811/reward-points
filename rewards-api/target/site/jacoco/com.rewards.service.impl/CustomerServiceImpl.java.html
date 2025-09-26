@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomerServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rewards API</a> &gt; <a href="index.source.html" class="el_package">com.rewards.service.impl</a> &gt; <span class="el_source">CustomerServiceImpl.java</span></div><h1>CustomerServiceImpl.java</h1><pre class="source lang-java linenums">package com.rewards.service.impl;
+
+import com.rewards.model.Customer;
+import com.rewards.repository.CustomerRepository;
+import com.rewards.service.CustomerService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+
+@Service
+public class CustomerServiceImpl implements CustomerService {
+
+    private final CustomerRepository customerRepository;
+
+<span class="fc" id="L16">    public CustomerServiceImpl(CustomerRepository customerRepository) {</span>
+<span class="fc" id="L17">        this.customerRepository = customerRepository;</span>
+<span class="fc" id="L18">    }</span>
+
+    @Override
+    public Customer createCustomer(Customer customer) {
+        // check if email already exists
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if ( customerRepository.existsByCustomerEmail( customer.getCustomerEmail( ) ) ) {</span>
+<span class="fc" id="L24">            throw new IllegalArgumentException( &quot;Customer with email already exists&quot; );</span>
+        }
+<span class="fc" id="L26">        return customerRepository.save( customer );</span>
+    }
+
+    @Override
+    public List&lt;Customer&gt; getAllCustomers() {
+<span class="fc" id="L31">        return customerRepository.findAll( );</span>
+    }
+
+    @Override
+    public Customer getCustomerById(Long id) {
+<span class="fc" id="L36">        return customerRepository.findById( id )</span>
+<span class="fc" id="L37">                .orElseThrow( () -&gt; new NoSuchElementException( &quot;Customer not found with id &quot; + id ) );</span>
+    }
+
+    @Override
+    public Customer getCustomerByEmail(String email) {
+<span class="fc" id="L42">        return customerRepository.findByCustomerEmail( email )</span>
+<span class="fc" id="L43">                .orElseThrow( () -&gt; new NoSuchElementException( &quot;Customer not found with email &quot; + email ) );</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
