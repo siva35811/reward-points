@@ -68,7 +68,7 @@ public class RewardServiceImpl implements RewardService {
 
         // Calculate monthly rewards (group by Year-Month)
         Map<String, Integer> monthlyRewards = transactionDTOs.stream( )
-                .filter( Objects::nonNull ).filter( Objects::nonNull )
+                .filter( Objects::nonNull )
                 .collect( Collectors.groupingBy(
                         tx -> String.format( "%04d-%02d",
                                 tx.getTransactionDate( ).getYear( ),

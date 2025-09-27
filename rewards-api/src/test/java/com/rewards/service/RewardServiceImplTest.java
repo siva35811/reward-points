@@ -41,7 +41,7 @@ class RewardServiceImplTest {
 
     @Test
     void calculateRewards_sampleData() {
-        // Arrange
+       
         Customer customer = new Customer();
         customer.setId(1L);
         customer.setCustomerName("Test");

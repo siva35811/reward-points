@@ -28,7 +28,7 @@ class CustomerServiceImplTest {
 
     @Test
     void createCustomer_whenEmailDoesNotExist_shouldSave() {
-        // Arrange
+      
         Customer customer = new Customer();
         customer.setCustomerEmail("test@example.com");
         customer.setCustomerName("John");
@@ -36,10 +36,10 @@ class CustomerServiceImplTest {
         when(customerRepository.existsByCustomerEmail("test@example.com")).thenReturn(false);
         when(customerRepository.save(customer)).thenReturn(customer);
 
-        // Act
+        
         Customer result = service.createCustomer(customer);
 
-        // Assert
+
         assertNotNull(result);
         assertEquals("John", result.getCustomerName());
         verify(customerRepository, times(1)).save(customer);
@@ -47,13 +47,12 @@ class CustomerServiceImplTest {
 
     @Test
     void createCustomer_whenEmailAlreadyExists_shouldThrowException() {
-        // Arrange
+      
         Customer customer = new Customer();
         customer.setCustomerEmail("duplicate@example.com");
 
         when(customerRepository.existsByCustomerEmail("duplicate@example.com")).thenReturn(true);
 
-        // Act + Assert
         IllegalArgumentException ex = assertThrows(
                 IllegalArgumentException.class,
                 () -> service.createCustomer(customer)
@@ -65,7 +64,7 @@ class CustomerServiceImplTest {
 
     @Test
     void getAllCustomers_shouldReturnList() {
-        // Arrange
+   
         Customer c1 = new Customer();
         c1.setCustomerName("John");
         Customer c2 = new Customer();
@@ -73,10 +72,8 @@ class CustomerServiceImplTest {
 
         when(customerRepository.findAll()).thenReturn(List.of(c1, c2));
 
-        // Act
         List<Customer> result = service.getAllCustomers();
 
-        // Assert
         assertEquals(2, result.size());
         assertTrue(result.contains(c1));
         assertTrue(result.contains(c2));
@@ -84,17 +81,17 @@ class CustomerServiceImplTest {
 
     @Test
     void getCustomerById_whenFound_shouldReturnCustomer() {
-        // Arrange
+    
         Customer customer = new Customer();
         customer.setId(1L);
         customer.setCustomerName("Alice");
 
         when(customerRepository.findById(1L)).thenReturn( Optional.of(customer));
 
-        // Act
+     
         Customer result = service.getCustomerById(1L);
 
-        // Assert
+
         assertNotNull(result);
         assertEquals("Alice", result.getCustomerName());
     }
@@ -113,17 +110,17 @@ class CustomerServiceImplTest {
 
     @Test
     void getCustomerByEmail_whenFound_shouldReturnCustomer() {
-        // Arrange
+     
         Customer customer = new Customer();
         customer.setCustomerEmail("bob@example.com");
         customer.setCustomerName("Bob");
 
         when(customerRepository.findByCustomerEmail("bob@example.com")).thenReturn(Optional.of(customer));
 
-        // Act
+
         Customer result = service.getCustomerByEmail("bob@example.com");
 
-        // Assert
+       
         assertNotNull(result);
         assertEquals("Bob", result.getCustomerName());
     }

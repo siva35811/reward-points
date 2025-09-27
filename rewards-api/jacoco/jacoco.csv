@@ -1,0 +1,16 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Rewards API,com.rewards.dto,TransactionResponseDTO,0,31,0,0,0,13,0,9,0,9
+Rewards API,com.rewards.dto,TransactionRequestDTO,0,38,0,0,0,16,0,11,0,11
+Rewards API,com.rewards.dto,RewardResponseDTO,0,59,0,0,0,25,0,17,0,17
+Rewards API,com.rewards.exception,GlobalExceptionHandler,18,60,0,0,6,16,2,5,2,5
+Rewards API,com.rewards.controller,TransactionController,0,19,0,0,0,7,0,2,0,2
+Rewards API,com.rewards.controller,RewardController,0,70,4,18,0,14,4,9,0,2
+Rewards API,com.rewards.controller,CustomerController,0,36,0,0,0,8,0,5,0,5
+Rewards API,com.rewards.mapper,RewardMapper,0,58,0,0,0,17,0,3,0,3
+Rewards API,com.rewards,RewardsApiApplication,5,3,0,0,2,1,1,1,1,1
+Rewards API,com.rewards.model,Customer,31,56,2,0,9,20,5,10,4,10
+Rewards API,com.rewards.model,Transaction,0,43,0,0,0,19,0,10,0,10
+Rewards API,com.rewards.util,RewardProperties,0,24,0,0,0,10,0,7,0,7
+Rewards API,com.rewards.service.impl,CustomerServiceImpl,0,57,0,2,0,11,0,8,0,7
+Rewards API,com.rewards.service.impl,RewardServiceImpl,4,191,2,6,1,45,2,9,0,7
+Rewards API,com.rewards.service.impl,TransactionServiceImpl,0,59,0,8,0,13,0,6,0,2

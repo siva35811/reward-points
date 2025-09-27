@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Customer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rewards API</a> &gt; <a href="index.source.html" class="el_package">com.rewards.model</a> &gt; <span class="el_source">Customer.java</span></div><h1>Customer.java</h1><pre class="source lang-java linenums">package com.rewards.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = &quot;customers&quot;, uniqueConstraints = @UniqueConstraint(columnNames = &quot;email&quot;))
+public class Customer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank
+    private String customerName;
+
+    @Column(unique = true, nullable = false)
+    @NotBlank
+    private String customerEmail;
+    @NotNull
+    private String customerContactNumber;
+<span class="fc" id="L27">    @OneToMany(mappedBy = &quot;customer&quot;)</span>
+    @JsonIgnore
+    private List&lt;Transaction&gt; transactions = new ArrayList&lt;&gt;( );
+
+<span class="fc" id="L31">    public Customer(String alice, String mail, String number) {</span>
+<span class="fc" id="L32">        this.customerName = customerName;</span>
+<span class="fc" id="L33">        this.customerEmail = customerEmail;</span>
+<span class="fc" id="L34">        this.customerContactNumber = customerContactNumber;</span>
+<span class="fc" id="L35">    }</span>
+
+    public @NotNull String getCustomerContactNumber() {
+<span class="fc" id="L38">        return customerContactNumber;</span>
+    }
+
+    public void setCustomerContactNumber(@NotNull String customerContactNumber) {
+<span class="fc" id="L42">        this.customerContactNumber = customerContactNumber;</span>
+<span class="fc" id="L43">    }</span>
+
+<span class="fc" id="L45">    public Customer() {</span>
+<span class="fc" id="L46">    }</span>
+
+    public Long getId() {
+<span class="fc" id="L49">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="fc" id="L53">        this.id = id;</span>
+<span class="fc" id="L54">    }</span>
+
+    public @NotBlank String getCustomerName() {
+<span class="fc" id="L57">        return customerName;</span>
+    }
+
+    public void setCustomerName(@NotBlank String customerName) {
+<span class="fc" id="L61">        this.customerName = customerName;</span>
+<span class="fc" id="L62">    }</span>
+
+    public @Email @NotBlank String getCustomerEmail() {
+<span class="fc" id="L65">        return customerEmail;</span>
+    }
+
+    public void setCustomerEmail(@Email @NotBlank String customerEmail) {
+<span class="fc" id="L69">        this.customerEmail = customerEmail;</span>
+<span class="fc" id="L70">    }</span>
+
+    public List&lt;Transaction&gt; getTransactions() {
+<span class="nc" id="L73">        return transactions;</span>
+    }
+
+    public void setTransactions(List&lt;Transaction&gt; transactions) {
+<span class="nc" id="L77">        this.transactions.clear( );</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if ( transactions != null ) {</span>
+<span class="nc" id="L79">            transactions.forEach( t -&gt; t.setCustomer( this ) );</span>
+<span class="nc" id="L80">            this.transactions.addAll( transactions );</span>
+        }
+<span class="nc" id="L82">    }</span>
+
+    public void addTransaction(Transaction tx) {
+<span class="nc" id="L85">        tx.setCustomer( this );</span>
+<span class="nc" id="L86">        this.transactions.add( tx );</span>
+<span class="nc" id="L87">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

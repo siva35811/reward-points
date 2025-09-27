@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RewardServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Rewards API</a> &gt; <a href="index.source.html" class="el_package">com.rewards.service.impl</a> &gt; <span class="el_source">RewardServiceImpl.java</span></div><h1>RewardServiceImpl.java</h1><pre class="source lang-java linenums">package com.rewards.service.impl;
+
+import com.rewards.dto.RewardResponseDTO;
+import com.rewards.dto.TransactionResponseDTO;
+import com.rewards.mapper.RewardMapper;
+import com.rewards.model.Customer;
+import com.rewards.model.Transaction;
+import com.rewards.repository.CustomerRepository;
+import com.rewards.repository.TransactionRepository;
+import com.rewards.service.RewardService;
+import com.rewards.util.RewardProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Service
+public class RewardServiceImpl implements RewardService {
+
+<span class="fc" id="L25">    private static final Logger log = LoggerFactory.getLogger( RewardServiceImpl.class );</span>
+
+    private final CustomerRepository customerRepository;
+    private final TransactionRepository transactionRepository;
+    private final RewardMapper rewardMapper;
+    private final RewardProperties rewardProperties;
+
+    public RewardServiceImpl(CustomerRepository customerRepository,
+                             TransactionRepository transactionRepository,
+                             RewardMapper rewardMapper,
+<span class="fc" id="L35">                             RewardProperties rewardProperties) {</span>
+<span class="fc" id="L36">        this.customerRepository = customerRepository;</span>
+<span class="fc" id="L37">        this.transactionRepository = transactionRepository;</span>
+<span class="fc" id="L38">        this.rewardMapper = rewardMapper;</span>
+<span class="fc" id="L39">        this.rewardProperties = rewardProperties;</span>
+<span class="fc" id="L40">    }</span>
+
+    @Override
+    public RewardResponseDTO calculateRewards(Long customerId, Integer months, LocalDate from, LocalDate to) {
+
+        // Resolve date range
+        LocalDate startDate;
+        LocalDate endDate;
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (months != null) {</span>
+<span class="fc" id="L50">            endDate = LocalDate.now();</span>
+<span class="fc" id="L51">            startDate = endDate.minusMonths(months);</span>
+        } else {
+<span class="fc" id="L53">            startDate = from;</span>
+<span class="fc" id="L54">            endDate = to;</span>
+        }
+
+<span class="fc" id="L57">        Customer customer = customerRepository.findById( customerId )</span>
+<span class="fc" id="L58">                .orElseThrow( () -&gt; new NoSuchElementException( &quot;Customer not found with id: &quot; + customerId ) );</span>
+
+
+<span class="fc" id="L61">        List&lt;Transaction&gt; transactions = transactionRepository</span>
+<span class="fc" id="L62">                .findByCustomerIdAndTransactionDateBetween( customerId, startDate, endDate );</span>
+
+        // Map transactions to DTOs with points
+<span class="fc" id="L65">        List&lt;TransactionResponseDTO&gt; transactionDTOs = transactions.stream( )</span>
+<span class="fc" id="L66">                .map( tx -&gt; rewardMapper.maptoTransactionDTO( tx, calculatePoints( tx.getAmount( ) ) ) )</span>
+<span class="fc" id="L67">                .toList( );</span>
+
+        // Calculate monthly rewards (group by Year-Month)
+<span class="fc" id="L70">        Map&lt;String, Integer&gt; monthlyRewards = transactionDTOs.stream( )</span>
+<span class="fc" id="L71">                .filter( Objects::nonNull ).filter( Objects::nonNull )</span>
+<span class="fc" id="L72">                .collect( Collectors.groupingBy(</span>
+<span class="fc" id="L73">                        tx -&gt; String.format( &quot;%04d-%02d&quot;,</span>
+<span class="fc" id="L74">                                tx.getTransactionDate( ).getYear( ),</span>
+<span class="fc" id="L75">                                tx.getTransactionDate( ).getMonthValue( ) ),</span>
+                        LinkedHashMap::new,
+<span class="fc" id="L77">                        Collectors.summingInt( TransactionResponseDTO::getPoints )</span>
+                ) );
+
+        // Calculate total rewards
+<span class="fc" id="L81">        int totalRewards = transactionDTOs.stream( )</span>
+<span class="fc" id="L82">                .filter( Objects::nonNull )</span>
+<span class="fc" id="L83">                .mapToInt( TransactionResponseDTO::getPoints )</span>
+<span class="fc" id="L84">                .sum( );</span>
+
+<span class="fc" id="L86">        log.info( &quot;Calculated rewards for customer {} from {} to {} =&gt; total {} points&quot;,</span>
+<span class="fc" id="L87">                customerId, startDate, endDate, totalRewards );</span>
+
+        // Build response DTO
+<span class="fc" id="L90">        return rewardMapper.maptoRewardResponse( customer, startDate, endDate, transactionDTOs, monthlyRewards, totalRewards );</span>
+    }
+
+    /**
+     * Calculates reward points for a given transaction amount.
+     */
+    private int calculatePoints(BigDecimal amount) {
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">        if ( amount == null ) return 0;</span>
+
+<span class="fc" id="L99">        BigDecimal truncated = amount.setScale( 0, RoundingMode.DOWN );</span>
+
+<span class="fc" id="L101">        int transactionAmount = truncated.intValueExact( );</span>
+
+<span class="fc" id="L103">        int minSpendForPoints = rewardProperties.getMinAmtSpendForPoints( );</span>
+<span class="fc" id="L104">        int minSpendForBonus = rewardProperties.getMinAmtSpendForBonus( );</span>
+<span class="fc" id="L105">        int multiplier = rewardProperties.getMultiplier( );</span>
+
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        if ( transactionAmount &gt; minSpendForBonus ) {</span>
+<span class="fc" id="L108">            int bonusPoints = (transactionAmount - minSpendForBonus) * multiplier;</span>
+<span class="fc" id="L109">            int regular = minSpendForBonus - minSpendForPoints;</span>
+<span class="fc" id="L110">            return bonusPoints + regular;</span>
+        }
+
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        if ( transactionAmount &gt; minSpendForPoints ) {</span>
+<span class="fc" id="L114">            return transactionAmount - minSpendForPoints;</span>
+        }
+
+<span class="nc" id="L117">        return 0;</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
