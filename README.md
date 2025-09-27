@@ -91,7 +91,6 @@ mvn spring-boot:run
 **Example Request:**
 ```json
 {
-  "customerId": null,
   "customerName": "test",
   "customerEmail": "test@example.com",
   "customerContactNumber": "123456778",
@@ -162,8 +161,8 @@ mvn test
 ## 🌐 Postman Testing
 1. Endpoints to test:
    - Create customer
-   - Create transaction (existing & new customer)
-   - Get rewards (3 months, custom range)
+   - Create transaction (existing)
+   - Get rewards ( months, custom range)
 
 ---
 
@@ -174,3 +173,4 @@ Rewards for Minamount to be spent in transaction are kept in the application.yml
   - Invalid date → **400 Bad Request**
   - Missing customer → request to add (if name & email provided)  
   - Otherwise → **404 Not Found**
+  - Reward points can be altered in application.yml
