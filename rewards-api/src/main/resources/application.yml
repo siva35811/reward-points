@@ -6,7 +6,7 @@ spring:
     url: jdbc:mysql://localhost:3306/rewards
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: S101siva45@@
+    password: 
   jpa:
     hibernate:
       ddl-auto: update
@@ -30,4 +30,5 @@ rewards:
   min-amt-spend-for-points: 50
   min-amt-spend-for-bonus: 100
   multiplier: 2
+
 
