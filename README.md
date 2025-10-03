@@ -91,9 +91,7 @@ mvn spring-boot:run
 **Example Request:**
 ```json
 {
-  "customerName": "test",
-  "customerEmail": "test@example.com",
-  "customerContactNumber": "123456778",
+  "customerId":1,
   "amount": 120.0,
   "transactionDate": "2025-09-20"
 }
