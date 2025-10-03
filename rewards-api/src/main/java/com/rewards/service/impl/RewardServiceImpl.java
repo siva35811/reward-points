@@ -32,11 +32,19 @@ public class RewardServiceImpl implements RewardService {
     private final RewardMapper rewardMapper;
     private final RewardProperties rewardProperties;
 	
-	private record LocalDateRange(LocalDate start, LocalDate end) {
+    public RewardServiceImpl(CustomerRepository customerRepository,
+                             TransactionRepository transactionRepository,
+                             RewardMapper rewardMapper,
+                             RewardProperties rewardProperties) {
+        this.customerRepository = customerRepository;
+        this.transactionRepository = transactionRepository;
+        this.rewardMapper = rewardMapper;
+        this.rewardProperties = rewardProperties;
     }
-
-
-
+	
+    private record LocalDateRange(LocalDate start, LocalDate end) {
+    }
+	
     /**
      * Resolves a date range either from the given months or from explicit from-to values.
      */
@@ -46,16 +54,6 @@ public class RewardServiceImpl implements RewardService {
             return new LocalDateRange( end.minusMonths( months ), end );
         }
         return new LocalDateRange( from, to );
-    }
-
-    public RewardServiceImpl(CustomerRepository customerRepository,
-                             TransactionRepository transactionRepository,
-                             RewardMapper rewardMapper,
-                             RewardProperties rewardProperties) {
-        this.customerRepository = customerRepository;
-        this.transactionRepository = transactionRepository;
-        this.rewardMapper = rewardMapper;
-        this.rewardProperties = rewardProperties;
     }
 
     /**
