@@ -18,6 +18,7 @@ public class RewardController {
     public RewardController(RewardService rewardService) {
         this.rewardService = rewardService;
     }
+
     @GetMapping("/{customerId}")
     public ResponseEntity<?> getRewards(
             @PathVariable Long customerId,
@@ -26,21 +27,22 @@ public class RewardController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
 
         if (months != null && (from != null || to != null)) {
-            throw new IllegalArgumentException("Provide either 'months' OR ('from' and 'to'), not both.");
+        if ( months != null && (from != null || to != null) ) {
+            throw new IllegalArgumentException( "Provide either 'months' OR ('from' and 'to'), not both." );
         }
-        if (months != null && months <= 0) {
-            throw new IllegalArgumentException("'months' must be greater than 0");
+        if ( months != null && months <= 0 ) {
+            throw new IllegalArgumentException( "'months' must be greater than 0" );
         }
-        if (from != null && to != null && from.isAfter(to)) {
-            throw new IllegalArgumentException("'from' date cannot be after 'to' date");
+        if ( from != null && to != null && from.isAfter( to ) ) {
+            throw new IllegalArgumentException( "'from' date cannot be after 'to' date" );
         }
 
-        RewardResponseDTO dto = rewardService.calculateRewards(customerId, months, from, to);
-        if (dto.getTotalRewards() == 0 && (dto.getTransactions() == null || dto.getTransactions().isEmpty())) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body( Map.of("message", "No rewards found"));
+        RewardResponseDTO dto = rewardService.calculateRewards( customerId, months, from, to );
+        if ( dto.getTotalRewards( ) == 0 && (dto.getTransactions( ) == null || dto.getTransactions( ).isEmpty( )) ) {
+            return ResponseEntity.status( HttpStatus.NOT_FOUND )
+                    .body( Map.of( "message", "No rewards found" ) );
         }
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok( dto );
     }
 
 }
