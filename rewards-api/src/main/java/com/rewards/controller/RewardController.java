@@ -26,7 +26,6 @@ public class RewardController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
 
-        if (months != null && (from != null || to != null)) {
         if ( months != null && (from != null || to != null) ) {
             throw new IllegalArgumentException( "Provide either 'months' OR ('from' and 'to'), not both." );
         }
