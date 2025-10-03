@@ -38,7 +38,7 @@ public class RewardServiceImpl implements RewardService {
 
 
     /**
-     * Resolves a date range either from the given {@code months} or from explicit {@code from}/{@code to} values.
+     * Resolves a date range either from the given months or from explicit from-to values.
      */
     private LocalDateRange resolveDateRange(Integer months, LocalDate from, LocalDate to) {
         if ( months != null ) {
